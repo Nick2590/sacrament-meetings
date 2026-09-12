@@ -1,0 +1,42 @@
+import MeetingCard from '../../components/MeetingCard';
+import { fetchApi } from '../../lib/api';
+import type { SacramentMeeting } from '../../lib/types';
+
+export const dynamic = 'force-dynamic';
+
+export default async function MeetingsPage() {
+  const meetings = await fetchApi<SacramentMeeting[]>('/api/meetings');
+
+  return (
+    <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-10 sm:px-8 lg:py-14" aria-labelledby="meetings-title">
+      <div className="max-w-2xl">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">
+          Desert Ridge Ward
+        </p>
+        <h1 id="meetings-title" className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
+          Sacrament Meetings
+        </h1>
+        <p className="mt-3 text-base leading-7 text-slate-600">
+          Browse current and past meeting programs, including the people and music planned for each gathering.
+        </p>
+      </div>
+
+      {meetings.length > 0 ? (
+        <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {meetings.map((meeting) => (
+            <li key={meeting.id}>
+              <MeetingCard meeting={meeting} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="mt-10 rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center">
+          <h3 className="text-lg font-semibold text-slate-900">No meetings found</h3>
+          <p className="mt-2 text-sm text-slate-600">
+            Meeting programs will appear here when they are added.
+          </p>
+        </div>
+      )}
+    </section>
+  );
+}
