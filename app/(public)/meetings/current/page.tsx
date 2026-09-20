@@ -1,5 +1,5 @@
-import { fetchApi } from '../../../lib/api';
-import type { SacramentMeeting } from '../../../lib/types';
+import { fetchApi } from '../../../../lib/api';
+import type { SacramentMeeting } from '../../../../lib/types';
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';

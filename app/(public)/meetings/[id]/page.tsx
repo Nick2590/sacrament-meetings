@@ -1,6 +1,6 @@
-import MeetingDetail from '../../../components/MeetingDetail';
-import { fetchApi } from '../../../lib/api';
-import type { SacramentMeeting } from '../../../lib/types';
+import MeetingDetail from '../../../../components/MeetingDetail';
+import { fetchApi } from '../../../../lib/api';
+import type { SacramentMeeting } from '../../../../lib/types';
 import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';

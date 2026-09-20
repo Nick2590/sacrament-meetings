@@ -21,7 +21,7 @@ export async function GET(
     return Response.json({ message: 'Invalid meeting ID' }, { status: 400 });
   }
 
-  const meeting: SacramentMeeting | null = getMeetingById(meetingId);
+  const meeting: SacramentMeeting | null = await getMeetingById(meetingId);
 
   if (!meeting) {
     return Response.json({ message: 'Meeting not found' }, { status: 404 });

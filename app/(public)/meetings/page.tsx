@@ -1,11 +1,23 @@
-import MeetingCard from '../../components/MeetingCard';
-import { fetchApi } from '../../lib/api';
-import type { SacramentMeeting } from '../../lib/types';
+import MeetingCard from '../../../components/MeetingCard';
+import Pagination from '../../../components/Pagination';
+import MeetingSearch from '../../../components/MeetingSearch';
+import { getMeetings, getMeetingsTotalPages } from '../../../lib/meetings-db';
 
 export const dynamic = 'force-dynamic';
 
-export default async function MeetingsPage() {
-  const meetings = await fetchApi<SacramentMeeting[]>('/api/meetings');
+interface MeetingsPageProps {
+  searchParams?: Promise<{ query?: string; page?: string }>;
+}
+
+export default async function MeetingsPage({ searchParams }: MeetingsPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const query = resolvedSearchParams?.query ?? '';
+  const parsedPage = Number(resolvedSearchParams?.page);
+  const currentPage = Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+  const [meetings, totalPages] = await Promise.all([
+    getMeetings(query, currentPage),
+    getMeetingsTotalPages(query),
+  ]);
 
   return (
     <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-10 sm:px-8 lg:py-14" aria-labelledby="meetings-title">
@@ -20,6 +32,8 @@ export default async function MeetingsPage() {
           Browse current and past meeting programs, including the people and music planned for each gathering.
         </p>
       </div>
+
+      <MeetingSearch />
 
       {meetings.length > 0 ? (
         <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -37,6 +51,8 @@ export default async function MeetingsPage() {
           </p>
         </div>
       )}
+
+      <Pagination totalPages={totalPages} />
     </section>
   );
 }
