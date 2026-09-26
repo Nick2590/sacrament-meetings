@@ -112,20 +112,77 @@ export async function getMeetingsByDate(date: string): Promise<SacramentMeeting[
 export async function addMeeting(
   meeting: Omit<SacramentMeeting, 'id'>,
 ): Promise<SacramentMeeting> {
-  void meeting;
-  throw new Error('Database implementation is coming in Week 04.');
+  const rows = await sql`
+    INSERT INTO meetings (
+      date,
+      meeting_type,
+      presiding,
+      conducting,
+      announcements,
+      opening_hymn,
+      opening_prayer,
+      ward_business,
+      stake_business,
+      sacrament_hymn,
+      speakers,
+      closing_hymn,
+      closing_prayer
+    ) VALUES (
+      ${meeting.date},
+      ${meeting.meetingType},
+      ${meeting.presiding},
+      ${meeting.conducting},
+      ARRAY(SELECT jsonb_array_elements_text(${JSON.stringify(meeting.announcements ?? [])}::jsonb)),
+      ${JSON.stringify(meeting.openingHymn)}::jsonb,
+      ${meeting.openingPrayer},
+      ${JSON.stringify(meeting.wardBusiness)}::jsonb,
+      ${meeting.stakeBusiness},
+      ${JSON.stringify(meeting.sacramentHymn)}::jsonb,
+      ${JSON.stringify(meeting.speakers)}::jsonb,
+      ${JSON.stringify(meeting.closingHymn)}::jsonb,
+      ${meeting.closingPrayer}
+    )
+    RETURNING *
+  `;
+
+  return mapMeeting((rows as unknown as MeetingRow[])[0]);
 }
 
 export async function updateMeeting(
   id: number,
-  meeting: Partial<Omit<SacramentMeeting, 'id'>>,
+  meeting: Omit<SacramentMeeting, 'id'>,
 ): Promise<SacramentMeeting> {
-  void id;
-  void meeting;
-  throw new Error('Database implementation is coming in Week 04.');
+  const rows = await sql`
+    UPDATE meetings
+    SET
+      date = ${meeting.date},
+      meeting_type = ${meeting.meetingType},
+      presiding = ${meeting.presiding},
+      conducting = ${meeting.conducting},
+      announcements = ARRAY(SELECT jsonb_array_elements_text(${JSON.stringify(meeting.announcements ?? [])}::jsonb)),
+      opening_hymn = ${JSON.stringify(meeting.openingHymn)}::jsonb,
+      opening_prayer = ${meeting.openingPrayer},
+      ward_business = ${JSON.stringify(meeting.wardBusiness)}::jsonb,
+      stake_business = ${meeting.stakeBusiness},
+      sacrament_hymn = ${JSON.stringify(meeting.sacramentHymn)}::jsonb,
+      speakers = ${JSON.stringify(meeting.speakers)}::jsonb,
+      closing_hymn = ${JSON.stringify(meeting.closingHymn)}::jsonb,
+      closing_prayer = ${meeting.closingPrayer}
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  const meetingRows = rows as unknown as MeetingRow[];
+
+  if (!meetingRows[0]) {
+    throw new Error(`Meeting ${id} was not found.`);
+  }
+
+  return mapMeeting(meetingRows[0]);
 }
 
 export async function deleteMeeting(id: number): Promise<void> {
-  void id;
-  throw new Error('Database implementation is coming in Week 04.');
+  await sql`
+    DELETE FROM meetings
+    WHERE id = ${id}
+  `;
 }

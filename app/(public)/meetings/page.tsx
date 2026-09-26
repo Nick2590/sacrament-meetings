@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import MeetingCard from '../../../components/MeetingCard';
 import Pagination from '../../../components/Pagination';
 import MeetingSearch from '../../../components/MeetingSearch';
@@ -21,16 +22,25 @@ export default async function MeetingsPage({ searchParams }: MeetingsPageProps) 
 
   return (
     <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-10 sm:px-8 lg:py-14" aria-labelledby="meetings-title">
-      <div className="max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">
-          Desert Ridge Ward
-        </p>
-        <h1 id="meetings-title" className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
-          Sacrament Meetings
-        </h1>
-        <p className="mt-3 text-base leading-7 text-slate-600">
-          Browse current and past meeting programs, including the people and music planned for each gathering.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">
+            Desert Ridge Ward
+          </p>
+          <h1 id="meetings-title" className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
+            Sacrament Meetings
+          </h1>
+          <p className="mt-3 text-base leading-7 text-slate-600">
+            Browse current and past meeting programs, including the people and music planned for each gathering.
+          </p>
+        </div>
+
+        <Link
+          href="/meetings/new"
+          className="inline-flex items-center rounded-md bg-teal-700 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+        >
+          Add Meeting
+        </Link>
       </div>
 
       <MeetingSearch />
