@@ -8,6 +8,7 @@ import {
   deleteMeeting as deleteMeetingRecord,
   updateMeeting as updateMeetingRecord,
 } from './meetings-db';
+import { requireManagementSession } from './require-management-session';
 
 function hymnNumberSchema(fieldLabel: string) {
   return z.coerce
@@ -157,6 +158,7 @@ export async function createMeeting(
   _prevState: State,
   formData: FormData,
 ): Promise<State> {
+  await requireManagementSession();
   const { result, values } = readMeetingFormData(formData);
 
   if (!result.success) {
@@ -183,6 +185,7 @@ export async function updateMeeting(
   _prevState: State,
   formData: FormData,
 ): Promise<State> {
+  await requireManagementSession();
   const id = z.number().int().positive().safeParse(meetingId);
   const { result, values } = readMeetingFormData(formData);
 
@@ -210,6 +213,7 @@ export async function updateMeeting(
 }
 
 export async function deleteMeeting(formData: FormData): Promise<void> {
+  await requireManagementSession();
   const id = z.coerce.number().int().positive().safeParse(formData.get('id'));
 
   if (!id.success) {

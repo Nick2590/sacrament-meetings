@@ -9,10 +9,39 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+function getMetadataBase(): URL {
+  const vercelUrl = process.env.VERCEL_URL?.trim();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  const baseUrl = vercelUrl ?? appUrl ?? "http://localhost:3000";
+  const normalizedUrl = /^https?:\/\//i.test(baseUrl)
+    ? baseUrl
+    : `https://${baseUrl}`;
+
+  return new URL(normalizedUrl);
+}
+
 export const metadata: Metadata = {
-  title: "Sacrament Meeting Planner",
+  metadataBase: getMetadataBase(),
+  title: {
+    default: "Sacrament Meeting Planner",
+    template: "%s | Sacrament Meeting Planner",
+  },
   description:
-    "Organize and review Desert Ridge Ward sacrament meeting programs.",
+    "Plan Desert Ridge Ward sacrament meeting schedules and programs, and review meeting details, speakers, and music.",
+  openGraph: {
+    title: "Sacrament Meeting Planner",
+    description:
+      "Plan Desert Ridge Ward sacrament meeting schedules and programs, and review meeting details, speakers, and music.",
+    type: "website",
+    images: [
+      {
+        url: "/meeting-planner.svg",
+        width: 640,
+        height: 480,
+        alt: "Illustration of a printed sacrament meeting program",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

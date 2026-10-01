@@ -1,8 +1,29 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import MeetingCard from '../../../components/MeetingCard';
 import Pagination from '../../../components/Pagination';
 import MeetingSearch from '../../../components/MeetingSearch';
 import { getMeetings, getMeetingsTotalPages } from '../../../lib/meetings-db';
+
+export const metadata: Metadata = {
+  title: 'Sacrament Meetings',
+  description:
+    'Browse upcoming and past sacrament meeting schedules, programs, speakers, hymns, and other details.',
+  openGraph: {
+    title: 'Sacrament Meetings',
+    description:
+      'Browse upcoming and past sacrament meeting schedules, programs, speakers, hymns, and other details.',
+    type: 'website',
+    images: [
+      {
+        url: '/meeting-planner.svg',
+        width: 640,
+        height: 480,
+        alt: 'Illustration of a printed sacrament meeting program',
+      },
+    ],
+  },
+};
 
 export const dynamic = 'force-dynamic';
 
